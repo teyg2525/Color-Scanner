@@ -1,16 +1,36 @@
 ﻿using System;
+using ColorScanner.Services;
+using ColorScanner.ViewModels;
+using ColorScanner.Views;
+using Prism.Ioc;
+using Prism.Unity;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace ColorScanner
 {
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
+        public static T Resolve<T>()
+        {
+            return (Application.Current as App).Container.Resolve<T>();
+        }
+
         public App()
+            : this(null)
+        {
+        }
+
+        public App(Prism.IPlatformInitializer initializer = null)
+            : base(initializer)
+        {
+        }
+
+        protected override void OnInitialized()
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new ColorsPage();
         }
 
         protected override void OnStart()
@@ -23,6 +43,14 @@ namespace ColorScanner
 
         protected override void OnResume()
         {
+        }
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            containerRegistry.RegisterInstance<IBluetoothService>(Container.Resolve<BluetoothService>());
+
+            containerRegistry.RegisterForNavigation<ColorsPage, ColorsPageViewModel>(nameof(ColorsPage));
+            containerRegistry.RegisterForNavigation<BluetoothDevicesPage, BluetoothDevicesPageViewModel>(nameof(BluetoothDevicesPage));
         }
     }
 }
