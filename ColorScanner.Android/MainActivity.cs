@@ -3,12 +3,12 @@
 using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using Acr.UserDialogs;
 using Prism;
 using Prism.Ioc;
+using ColorScanner.Services;
+using ColorScanner.Droid.Services;
 
 namespace ColorScanner.Droid
 {
@@ -40,7 +40,7 @@ namespace ColorScanner.Droid
     {
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
+            containerRegistry.RegisterInstance<IBluetoothService>(BluetoothService.Instance);
         }
     }
 }

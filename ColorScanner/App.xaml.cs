@@ -1,4 +1,5 @@
 ﻿using System;
+using Acr.UserDialogs;
 using ColorScanner.Services;
 using ColorScanner.ViewModels;
 using ColorScanner.Views;
@@ -47,7 +48,7 @@ namespace ColorScanner
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterInstance<IBluetoothService>(Container.Resolve<BluetoothService>());
+            containerRegistry.RegisterInstance(UserDialogs.Instance);
 
             containerRegistry.RegisterForNavigation<ColorsPage, ColorsPageViewModel>(nameof(ColorsPage));
             containerRegistry.RegisterForNavigation<BluetoothDevicesPage, BluetoothDevicesPageViewModel>(nameof(BluetoothDevicesPage));

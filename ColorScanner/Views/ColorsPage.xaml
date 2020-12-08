@@ -3,9 +3,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:ColorScanner.Views"
              x:Class="ColorScanner.Views.ColorsPage">
-    <Grid>
-        <Label Text="Test"
-               VerticalOptions="Center"
-               HorizontalOptions="Center"/>
+
+    <Grid RowDefinitions="0.35*, 0.65*, 50">
+
+        <BoxView Grid.Row="0"
+                 VerticalOptions="Fill"
+                 HorizontalOptions="Fill"
+                 Color="{Binding CurrentColor}"/>
+
+        <StackLayout Grid.Row="1"
+                     Orientation="Horizontal"
+                     VerticalOptions="Start"
+                     HorizontalOptions="Start">
+
+            <Label Text="HEX value: "/>
+            <Label Text="{Binding HEXValue}"/>
+        </StackLayout>
+
+        <Button Grid.Row="2"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                HeightRequest="40"
+                WidthRequest="100"
+                Text="Connect"
+                Command="{Binding ConnectCommand}">
+
+            <Button.Triggers>
+                <DataTrigger TargetType="Button" Binding="{Binding IsConnected}" Value="True">
+                    <Setter Property="Text" Value="Disconnect"/>
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
     </Grid>
 </views:BaseContentPage>
