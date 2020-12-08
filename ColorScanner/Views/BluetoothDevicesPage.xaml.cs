@@ -11,9 +11,5 @@ namespace ColorScanner.Views
         {
             InitializeComponent();
         }
-
-        void ListView_ItemTapped(System.Object sender, Xamarin.Forms.ItemTappedEventArgs e)
-        {
-        }
     }
 }

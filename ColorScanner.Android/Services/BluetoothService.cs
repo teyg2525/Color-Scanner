@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Android.Bluetooth;
 using ColorScanner.Services;
+using Java.Interop;
 using Java.IO;
 using Java.Util;
 
@@ -23,7 +24,7 @@ namespace ColorScanner.Droid.Services
 
 		private CancellationTokenSource _ct { get; set; }
 
-		const int RequestResolveError = 1000;
+        const int RequestResolveError = 1000;
 
 		#region IBluetoothService implementation
 
