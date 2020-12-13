@@ -6,8 +6,9 @@ namespace ColorScanner.Services
 {
     public interface IBluetoothService
     {
-        void Start(string name, int sleepTime, bool readAsCharArray = false);
+        void Start(string name, int sleepTime);
         void Cancel();
         Task<IEnumerable<string>> GetPairedDevices();
+        Task<string> GetCurrentData();
     }
 }

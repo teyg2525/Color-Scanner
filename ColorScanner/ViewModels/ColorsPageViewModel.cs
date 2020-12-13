@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using ColorScanner.Services;
 using ColorScanner.Views;
@@ -9,12 +13,17 @@ namespace ColorScanner.ViewModels
 {
     public class ColorsPageViewModel : BaseViewModel
     {
+        private const int DEFAULT_REFRESHING_FREQUENCY = 200;
         private IBluetoothService _BluetoothService;
-        private IBluetoothService BluetoothService => _BluetoothService ??= App.Resolve<IBluetoothService>();
 
-        public ColorsPageViewModel()
+        private CancellationTokenSource _refreshingCancellationToken;
+        private string _RRegex = "R:[0-9]{3}";
+        private string _GRegex = "G:[0-9]{3}";
+        private string _BRegex = "B:[0-9]{3}";
+
+        public ColorsPageViewModel(IBluetoothService bluetoothService)
         {
-            
+            _BluetoothService = bluetoothService;
         }
 
         #region -- Public Properties --
@@ -33,22 +42,22 @@ namespace ColorScanner.ViewModels
             set => SetProperty(ref _HEXValue, value);
         }
 
-        private int _RValue;
-        public int RValue
+        private double _RValue;
+        public double RValue
         {
             get => _RValue;
             set => SetProperty(ref _RValue, value);
         }
 
-        private int _GValue;
-        public int GValue
+        private double _GValue;
+        public double GValue
         {
             get => _GValue;
             set => SetProperty(ref _GValue, value);
         }
 
-        private int _BValue;
-        public int BValue
+        private double _BValue;
+        public double BValue
         {
             get => _BValue;
             set => SetProperty(ref _BValue, value);
@@ -75,9 +84,6 @@ namespace ColorScanner.ViewModels
             set => SetProperty(ref _NoData, value);
         }
 
-        private ICommand _ConnectCommand;
-        public ICommand ConnectCommand => _ConnectCommand ??= new Command(OnConnectCommand);
-
         #endregion
 
         #region -- Overrides --
@@ -95,26 +101,82 @@ namespace ColorScanner.ViewModels
             {
                 ConnectedDevice = device;
                 _BluetoothService.Start(ConnectedDevice, 200);
+
+                _refreshingCancellationToken = new CancellationTokenSource();
+
+                Task.Run(() => InitRefreshingLoopAsync(_refreshingCancellationToken.Token));
+
                 IsConnected = true;
             }
+        }
+
+        public override void OnNavigatedFrom(INavigationParameters parameters)
+        {
+            base.OnNavigatedFrom(parameters);
+
+            _refreshingCancellationToken?.Cancel();
         }
 
         #endregion
 
         #region -- Private Helpers --
 
-        private async void OnConnectCommand()
+        private async Task InitRefreshingLoopAsync(CancellationToken cancellationToken, int frequency = DEFAULT_REFRESHING_FREQUENCY)
         {
-            if (IsConnected)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                _BluetoothService.Cancel();
-                ConnectedDevice = null;
-                IsConnected = false;
+                var data = await _BluetoothService.GetCurrentData();
+
+                if (!string.IsNullOrEmpty(data))
+                {
+                    await SetDisplayingData(data);
+                }
+                else
+                {
+                    await SetDefaultValues();
+                }
             }
-            else
+        }
+
+        private Task SetDisplayingData(string data)
+        {
+            try
             {
-                await NavigationService.NavigateAsync(nameof(BluetoothDevicesPage));
+                var rRegex = new Regex(_RRegex);
+                var gRegex = new Regex(_GRegex);
+                var bRegex = new Regex(_BRegex);
+
+                var r = double.Parse(rRegex.Match(data).Value.Replace("R:", string.Empty));
+                var g = double.Parse(rRegex.Match(data).Value.Replace("G:", string.Empty));
+                var b = double.Parse(rRegex.Match(data).Value.Replace("B:", string.Empty));
+
+                CurrentColor = Color.FromRgb(r, g, b);
+                HexValue = _CurrentColor.ToHex();
+                RValue = r;
+                GValue = g;
+                BValue = b;
+                NoData = false;
             }
+            catch
+            {
+                Debug.WriteLine("Something wrong.");
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Task SetDefaultValues()
+        {
+            NoData = true;
+
+            CurrentColor = Color.White;
+
+            HexValue = null;
+            RValue = 0;
+            GValue = 0;
+            BValue = 0;
+
+            return Task.CompletedTask;
         }
 
         #endregion
