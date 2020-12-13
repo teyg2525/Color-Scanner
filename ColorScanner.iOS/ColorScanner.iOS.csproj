@@ -142,4 +142,15 @@
       <Name>ColorScanner</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\ic_arrow_back.png" />
+    <BundleResource Include="Resources\ic_arrow_back%402x.png" />
+    <BundleResource Include="Resources\ic_arrow_back%403x.png" />
+    <BundleResource Include="Resources\ic_arrow_right.png" />
+    <BundleResource Include="Resources\ic_arrow_right%402x.png" />
+    <BundleResource Include="Resources\ic_arrow_right%403x.png" />
+    <BundleResource Include="Resources\ic_refresh.png" />
+    <BundleResource Include="Resources\ic_refresh%402x.png" />
+    <BundleResource Include="Resources\ic_refresh%403x.png" />
+  </ItemGroup>
 </Project>

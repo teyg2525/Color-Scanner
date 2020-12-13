@@ -12,10 +12,7 @@ namespace ColorScanner
 {
     public partial class App : PrismApplication
     {
-        public static T Resolve<T>()
-        {
-            return (Application.Current as App).Container.Resolve<T>();
-        }
+        public static T Resolve<T>() => (Application.Current as App).Container.Resolve<T>();
 
         public App()
             : this(null)
@@ -27,11 +24,12 @@ namespace ColorScanner
         {
         }
 
-        protected override void OnInitialized()
+        protected override async void OnInitialized()
         {
             InitializeComponent();
 
-            MainPage = new ColorsPage();
+            await NavigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(BluetoothDevicesPage)}");
+            //MainPage = new NavigationPage(new BluetoothDevicesPage());
         }
 
         protected override void OnStart()
@@ -50,6 +48,7 @@ namespace ColorScanner
         {
             containerRegistry.RegisterInstance(UserDialogs.Instance);
 
+            containerRegistry.RegisterForNavigation<NavigationPage>(nameof(NavigationPage));
             containerRegistry.RegisterForNavigation<ColorsPage, ColorsPageViewModel>(nameof(ColorsPage));
             containerRegistry.RegisterForNavigation<BluetoothDevicesPage, BluetoothDevicesPageViewModel>(nameof(BluetoothDevicesPage));
         }

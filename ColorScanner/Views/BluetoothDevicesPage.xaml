@@ -3,18 +3,60 @@
                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                        xmlns:prism="http://prismlibrary.com"
                        xmlns:views="clr-namespace:ColorScanner.Views"
+                       xmlns:strings="clr-namespace:ColorScanner.Resources.Strings"
                        x:Class="ColorScanner.Views.BluetoothDevicesPage">
 
-    <Grid RowDefinitions="*, 50">
+    <Grid Margin="0"
+          Padding="0"
+          RowDefinitions="60, *, 60">
 
-        <ListView Grid.Row="0"
+        <ContentView Grid.Row="0"
+                     Margin="0"
+                     Padding="0"
+                     BackgroundColor="{StaticResource bg_i4}">
+
+            <Label Text="{x:Static strings:Strings.DevicesList}"
+                   FontFamily="Roboto-Bold"
+                   FontSize="{StaticResource tsize_i2}"
+                   TextColor="{StaticResource bg_i2}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"/>
+
+
+        </ContentView>
+
+        <ListView Grid.Row="1"
                   ItemsSource="{Binding Devices}"
                   SelectionMode="None"
-                  RowHeight="40">
+                  SeparatorColor="{StaticResource bg_i3}"
+                  RefreshCommand="{Binding RefreshCommand}"
+                  IsRefreshing="{Binding IsRefreshing}"
+                  IsPullToRefreshEnabled="True"
+                  RowHeight="60">
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding .}"/>
+                    <ViewCell>
+                        <Grid ColumnDefinitions="*, 60">
+
+                            <Label Grid.Column="0"
+                                   Text="{Binding .}"
+                                   FontFamily="Roboto-Meduim"
+                                   FontSize="{StaticResource tsize_i1}"
+                                   TextColor="{StaticResource bg_i4}"
+                                   VerticalOptions="Fill"
+                                   HorizontalOptions="Fill"
+                                   VerticalTextAlignment="Center"
+                                   HorizontalTextAlignment="Start"
+                                   Margin="16,0"/>
+
+                            <Image Grid.Column="1"
+                                   Source="ic_arrow_right"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"/>
+
+                        </Grid>
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
 
@@ -24,5 +66,30 @@
                                               Command="{Binding SelectDeviceCommand}"/>
             </ListView.Behaviors>
         </ListView>
+
+        <ContentView Grid.Row="2"
+                     Margin="0"
+                     Padding="0"
+                     BackgroundColor="{StaticResource bg_i1}">
+
+            <StackLayout Margin="0"
+                         Padding="0"
+                         VerticalOptions="Center"
+                         HorizontalOptions="Center"
+                         Orientation="Horizontal">
+
+                <Image Source="ic_refresh"/>
+
+                <Label Text="{x:Static strings:Strings.RefreshList}"
+                       FontFamily="Roboto-Bold"
+                       FontSize="{StaticResource tsize_i2}"
+                       TextColor="{StaticResource bg_i2}"/>
+
+            </StackLayout>
+
+            <ContentView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding RefreshCommand}"/>
+            </ContentView.GestureRecognizers>
+        </ContentView>
     </Grid>
 </views:BaseContentPage>

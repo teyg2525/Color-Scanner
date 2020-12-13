@@ -1,38 +1,144 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <views:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:views="clr-namespace:ColorScanner.Views"
-             x:Class="ColorScanner.Views.ColorsPage">
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:prism="http://prismlibrary.com"
+                       xmlns:views="clr-namespace:ColorScanner.Views"
+                       xmlns:strings="clr-namespace:ColorScanner.Resources.Strings"
+                       x:Class="ColorScanner.Views.ColorsPage">
 
-    <Grid RowDefinitions="0.35*, 0.65*, 50">
+    <Grid RowDefinitions="60, *, 186"
+          BackgroundColor="{Binding CurrentColor}"
+          Margin="0"
+          Padding="0">
 
-        <BoxView Grid.Row="0"
-                 VerticalOptions="Fill"
-                 HorizontalOptions="Fill"
-                 Color="{Binding CurrentColor}"/>
+        <Grid Grid.Row="0"
+              Margin="0"
+              Padding="0"
+              ColumnDefinitions="60, *"
+              BackgroundColor="{StaticResource bg_i4}">
 
-        <StackLayout Grid.Row="1"
-                     Orientation="Horizontal"
-                     VerticalOptions="Start"
-                     HorizontalOptions="Start">
+            <ContentView Grid.Column="0"
+                         Margin="0"
+                         Padding="0"
+                         VerticalOptions="Fill"
+                         HorizontalOptions="Fill">
 
-            <Label Text="HEX value: "/>
-            <Label Text="{Binding HEXValue}"/>
-        </StackLayout>
+                <Image Source="ic_arrow_back"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"/>
 
-        <Button Grid.Row="2"
-                VerticalOptions="Center"
-                HorizontalOptions="Center"
-                HeightRequest="40"
-                WidthRequest="100"
-                Text="Connect"
-                Command="{Binding ConnectCommand}">
+                <View.GestureRecognizers>
+                    <TapGestureRecognizer Command="{prism:GoBack}"/>
+                </View.GestureRecognizers>
 
-            <Button.Triggers>
-                <DataTrigger TargetType="Button" Binding="{Binding IsConnected}" Value="True">
-                    <Setter Property="Text" Value="Disconnect"/>
-                </DataTrigger>
-            </Button.Triggers>
-        </Button>
+            </ContentView>
+
+            <Label Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   Text="{Binding ConnectedDevice}"
+                   FontFamily="Roboto-Bold"
+                   FontSize="{StaticResource tsize_i2}"
+                   TextColor="{StaticResource bg_i2}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="FillAndExpand"
+                   VerticalTextAlignment="Center"
+                   HorizontalTextAlignment="Center"/>
+
+        </Grid>
+
+        <Label Grid.Row="1"
+               Text="{x:Static strings:Strings.NoData}"
+               FontFamily="Roboto-Bold"
+               FontSize="{StaticResource tsize_i2}"
+               TextColor="{StaticResource bg_i4}"
+               Margin="0, 60, 0, 186"
+               VerticalOptions="Fill"
+               HorizontalOptions="Fill"
+               VerticalTextAlignment="Center"
+               HorizontalTextAlignment="Center"
+               IsVisible="{Binding NoData}"/>
+
+        <Frame Grid.Row="2"
+               Margin="16"
+               Padding="0"
+               HasShadow="False"
+               CornerRadius="8"
+               BackgroundColor="{StaticResource bg_i4}">
+
+            <Grid VerticalOptions="FillAndExpand"
+                  HorizontalOptions="FillAndExpand"
+                  Margin="0"
+                  Padding="0">
+
+                <StackLayout Grid.Row="0"
+                             Margin="0"
+                             Padding="12"
+                             VerticalOptions="StartAndExpand"
+                             HorizontalOptions="FillAndExpand">
+
+                    <Label Text="{Binding HEXValue, StringFormat=HEX: {0}}"
+                           FontFamily="Roboto-Medium"
+                           FontSize="{StaticResource tsize_i2}"
+                           TextColor="{StaticResource bg_i2}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalTextAlignment="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,0,0,20"/>
+
+                    <Label Text="{Binding Ralue, StringFormat=R: {0}}"
+                           FontFamily="Roboto-Medium"
+                           FontSize="{StaticResource tsize_i2}"
+                           TextColor="{StaticResource bg_i2}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalTextAlignment="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,0,0,20"/>
+
+                    <Label Text="{Binding GValue, StringFormat=G: {0}}"
+                           FontFamily="Roboto-Medium"
+                           FontSize="{StaticResource tsize_i2}"
+                           TextColor="{StaticResource bg_i2}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalTextAlignment="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,0,0,20"/>
+
+                    <Label Text="{Binding BValue, StringFormat=B: {0}}"
+                           FontFamily="Roboto-Medium"
+                           FontSize="{StaticResource tsize_i2}"
+                           TextColor="{StaticResource bg_i2}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalTextAlignment="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,0,0,20"/>
+
+
+                    <View.Triggers>
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding NoData}" Value="True">
+                            <Setter Property="IsVisible" Value="False"/>
+                        </DataTrigger>
+                    </View.Triggers>
+
+                </StackLayout>
+
+                <Label Grid.Row="0"
+                       Text="{x:Static strings:Strings.ScanMessage}"
+                       FontFamily="Roboto-Light"
+                       FontSize="{StaticResource tsize_i2}"
+                       TextColor="{StaticResource bg_i2}"
+                       VerticalOptions="FillAndExpand"
+                       HorizontalOptions="FillAndExpand"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center"
+                       IsVisible="{Binding NoData}"/>
+
+            </Grid>
+
+        </Frame>
+
     </Grid>
 </views:BaseContentPage>

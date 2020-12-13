@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using ColorScanner.Services;
+using ColorScanner.Views;
 using Prism.Navigation;
 using Xamarin.Forms;
 
@@ -10,10 +11,10 @@ namespace ColorScanner.ViewModels
     public class BluetoothDevicesPageViewModel : BaseViewModel
     {
         private IBluetoothService _BluetoothService;
-        public IBluetoothService BluetoothService => _BluetoothService ??= App.Resolve<IBluetoothService>();
 
-        public BluetoothDevicesPageViewModel()
+        public BluetoothDevicesPageViewModel(IBluetoothService bluetoothService)
         {
+            _BluetoothService = bluetoothService;
         }
 
         #region -- Public Properties --
@@ -23,6 +24,13 @@ namespace ColorScanner.ViewModels
         {
             get => _Devices;
             set => SetProperty(ref _Devices, value);
+        }
+
+        private bool _IsRefreshing;
+        public bool IsRefreshing
+        {
+            get => _IsRefreshing;
+            set => SetProperty(ref _IsRefreshing, value);
         }
 
         private ICommand _SelectDeviceCommand;
@@ -48,16 +56,20 @@ namespace ColorScanner.ViewModels
 
         private async void OnSelectDeviceCommand(string device)
         {
-            await NavigationService.GoBackAsync(new NavigationParameters
+            var parameters = new NavigationParameters
             {
                 { Constants.SelectedDeviceKey, device }
-            });
+            };
+
+            await NavigationService.NavigateAsync(nameof(ColorsPage), parameters, useModalNavigation: false, animated: true);
         }
 
         private async void OnRefreshCommand()
         {
+            IsRefreshing = true;
             var devices = await _BluetoothService.GetPairedDevices();
             Devices = new ObservableCollection<string>(devices);
+            IsRefreshing = false;
         }
 
         #endregion

@@ -3,7 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:unity="clr-namespace:Prism.Unity;assembly=Prism.Unity.Forms"
              x:Class="ColorScanner.App">
-    <Application.Resources>
 
+    <Application.Resources>
+        <!-- Colors -->
+
+        <Color x:Key="bg_i1">#CF135D</Color>
+        <Color x:Key="bg_i2">#FFFFFF</Color>
+        <Color x:Key="bg_i3">#D9D9D9</Color>
+        <Color x:Key="bg_i4">#020520</Color>
+        <Color x:Key="bg_i5">#1D33F3</Color>
+
+        <!-- Font Sizes -->
+
+        <x:Double x:Key="tsize_i1">16</x:Double>
+        <x:Double x:Key="tsize_i2">18</x:Double>
     </Application.Resources>
 </unity:PrismApplication>

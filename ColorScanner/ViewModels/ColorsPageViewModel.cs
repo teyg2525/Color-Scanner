@@ -33,6 +33,27 @@ namespace ColorScanner.ViewModels
             set => SetProperty(ref _HEXValue, value);
         }
 
+        private int _RValue;
+        public int RValue
+        {
+            get => _RValue;
+            set => SetProperty(ref _RValue, value);
+        }
+
+        private int _GValue;
+        public int GValue
+        {
+            get => _GValue;
+            set => SetProperty(ref _GValue, value);
+        }
+
+        private int _BValue;
+        public int BValue
+        {
+            get => _BValue;
+            set => SetProperty(ref _BValue, value);
+        }
+
         private string _ConnectedDevice;
         public string ConnectedDevice
         {
@@ -45,6 +66,13 @@ namespace ColorScanner.ViewModels
         {
             get => _IsConnected;
             set => SetProperty(ref _IsConnected, value);
+        }
+
+        private bool _NoData = true;
+        public bool NoData
+        {
+            get => _NoData;
+            set => SetProperty(ref _NoData, value);
         }
 
         private ICommand _ConnectCommand;
