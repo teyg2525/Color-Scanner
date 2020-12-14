@@ -1,11 +1,8 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using ColorScanner.Services;
-using ColorScanner.Views;
 using Prism.Navigation;
 using Xamarin.Forms;
 
@@ -163,7 +160,7 @@ namespace ColorScanner.ViewModels
                 var b = int.Parse(bStr.Replace("B:", string.Empty));
 
                 var color = System.Drawing.Color.FromArgb(r, g, b);
-                var hex = $"{color.R.ToString("X2")}{color.G.ToString("X2")}{color.B.ToString("X2")}";
+                var hex = $"{color.R:X2}{color.G:X2}{color.B:X2}";
 
                 var frStr = frRegex.Match(data).Value;
                 var fgStr = fgRegex.Match(data).Value;
@@ -173,7 +170,7 @@ namespace ColorScanner.ViewModels
                 var fg = int.Parse(fgStr.Replace("Fg:", string.Empty));
                 var fb = int.Parse(fbStr.Replace("Fb:", string.Empty));
 
-                CurrentColor = Color.FromHex(hex);
+                CurrentColor = Xamarin.Forms.Color.FromHex(hex);
                 HexValue = hex;
                 RValue = r;
                 GValue = g;

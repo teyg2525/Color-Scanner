@@ -33,7 +33,6 @@ namespace ColorScanner.Droid.Services
 
 		public void Cancel()
 		{
-			System.Diagnostics.Debug.WriteLine("Send a cancel to task!");
 			_ct?.Cancel();
 		}
 
@@ -69,23 +68,9 @@ namespace ColorScanner.Droid.Services
 				{
 					await Task.Delay(sleepTime);
 
-					foreach (var bd in Adapter.BondedDevices)
-					{
-						System.Diagnostics.Debug.WriteLine("Paired devices found: " + bd.Name.ToUpper());
-						if (bd.Name.ToUpper().IndexOf(name.ToUpper()) >= 0)
-						{
+					device = Adapter.BondedDevices.FirstOrDefault(x => x.Name.ToUpper() == name.ToUpper());
 
-							System.Diagnostics.Debug.WriteLine("Found " + bd.Name + ". Try to connect with it!");
-							device = bd;
-							break;
-						}
-					}
-
-					if (device == null)
-					{
-						System.Diagnostics.Debug.WriteLine("Named device not found.");
-					}
-					else
+					if (device != null)
 					{
 						UUID uuid = UUID.FromString("00001101-0000-1000-8000-00805f9b34fb");
 
@@ -104,43 +89,24 @@ namespace ColorScanner.Droid.Services
 
 							if (BthSocket.IsConnected)
 							{
-								System.Diagnostics.Debug.WriteLine("Connected!");
 								var mReader = new InputStreamReader(BthSocket.InputStream);
 								var buffer = new BufferedReader(mReader);
 								var currentData = string.Empty;
 
-								while (_ct.IsCancellationRequested == false)
+								while (!_ct.IsCancellationRequested)
 								{
 									if (buffer.Ready())
 									{
 										char[] chr = new char[100];
 										currentData = await buffer.ReadLineAsync();
 
-										if (currentData.Length > 0)
+										if (!string.IsNullOrEmpty(currentData))
 										{
-											System.Diagnostics.Debug.WriteLine("Letto: " + currentData);
 											await resultTask(currentData);
 										}
-										else
-										{
-											System.Diagnostics.Debug.WriteLine("No data");
-										}
-
 									}
-									else
-									{
-										System.Diagnostics.Debug.WriteLine("No data to read");
-									}
-
-									await Task.Delay(sleepTime);
 								}
-
-								System.Diagnostics.Debug.WriteLine("Exit the inner loop");
 							}
-						}
-						else
-						{
-							System.Diagnostics.Debug.WriteLine("BthSocket = null");
 						}
 					}
 				}
@@ -158,8 +124,6 @@ namespace ColorScanner.Droid.Services
 					device = null;
 				}
 			}
-
-			System.Diagnostics.Debug.WriteLine("Exit the external loop");
 		}
 
 		#endregion
