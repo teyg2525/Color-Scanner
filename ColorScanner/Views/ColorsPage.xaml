@@ -6,7 +6,7 @@
                        xmlns:strings="clr-namespace:ColorScanner.Resources.Strings"
                        x:Class="ColorScanner.Views.ColorsPage">
 
-    <Grid RowDefinitions="60, *, 186"
+    <Grid RowDefinitions="60, *, 196"
           BackgroundColor="{Binding CurrentColor}"
           Margin="0"
           Padding="0">
@@ -60,7 +60,7 @@
 
         <Frame Grid.Row="2"
                Margin="16"
-               Padding="0"
+               Padding="10"
                HasShadow="False"
                CornerRadius="8"
                BackgroundColor="{StaticResource bg_i4}">
@@ -68,23 +68,36 @@
             <Grid VerticalOptions="FillAndExpand"
                   HorizontalOptions="FillAndExpand"
                   Margin="0"
-                  Padding="0">
+                  Padding="0"
+                  RowDefinitions="30, *"
+                  ColumnDefinitions="0.5*, 0.5*">
 
-                <StackLayout Grid.Row="0"
+                <Label Text="{Binding HexValue, StringFormat='HEX: {0}'}"
+                       Grid.Row="0"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="2"
+                       FontFamily="Roboto-Medium"
+                       FontSize="{StaticResource tsize_i2}"
+                       TextColor="{StaticResource bg_i2}"
+                       VerticalOptions="Center"
+                       HorizontalOptions="FillAndExpand"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center"
+                       Margin="0,0,0,0">
+
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding NoData}" Value="True">
+                            <Setter Property="IsVisible" Value="False"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+
+                <StackLayout Grid.Row="1"
+                             Grid.Column="0"
                              Margin="0"
-                             Padding="12"
+                             Padding="0"
                              VerticalOptions="StartAndExpand"
                              HorizontalOptions="FillAndExpand">
-
-                    <Label Text="{Binding HexValue, StringFormat=HEX: {0}}"
-                           FontFamily="Roboto-Medium"
-                           FontSize="{StaticResource tsize_i2}"
-                           TextColor="{StaticResource bg_i2}"
-                           VerticalOptions="Center"
-                           HorizontalOptions="FillAndExpand"
-                           VerticalTextAlignment="Center"
-                           HorizontalTextAlignment="Center"
-                           Margin="0,0,0,20"/>
 
                     <Label Text="{Binding RValue, StringFormat='R: {0}'}"
                            FontFamily="Roboto-Medium"
@@ -122,7 +135,53 @@
 
                 </StackLayout>
 
+                <StackLayout Grid.Row="1"
+                             Grid.Column="1"
+                             Margin="0"
+                             Padding="0"
+                             VerticalOptions="StartAndExpand"
+                             HorizontalOptions="FillAndExpand">
+
+                    <Label Text="{Binding FRValue, StringFormat='FR: {0}'}"
+                           FontFamily="Roboto-Medium"
+                           FontSize="{StaticResource tsize_i2}"
+                           TextColor="{StaticResource bg_i2}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalTextAlignment="Center"
+                           HorizontalTextAlignment="Center"/>
+
+                    <Label Text="{Binding FGValue, StringFormat='FG: {0}'}"
+                           FontFamily="Roboto-Medium"
+                           FontSize="{StaticResource tsize_i2}"
+                           TextColor="{StaticResource bg_i2}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalTextAlignment="Center"
+                           HorizontalTextAlignment="Center"/>
+
+                    <Label Text="{Binding FBValue, StringFormat='FB: {0}'}"
+                           FontFamily="Roboto-Medium"
+                           FontSize="{StaticResource tsize_i2}"
+                           TextColor="{StaticResource bg_i2}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalTextAlignment="Center"
+                           HorizontalTextAlignment="Center"/>
+
+
+                    <View.Triggers>
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding NoData}" Value="True">
+                            <Setter Property="IsVisible" Value="False"/>
+                        </DataTrigger>
+                    </View.Triggers>
+
+                </StackLayout>
+
                 <Label Grid.Row="0"
+                       Grid.Column="0"
+                       Grid.RowSpan="2"
+                       Grid.ColumnSpan="2"
                        Text="{x:Static strings:Strings.ScanMessage}"
                        FontFamily="Roboto-Light"
                        FontSize="{StaticResource tsize_i2}"

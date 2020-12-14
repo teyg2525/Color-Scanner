@@ -16,8 +16,6 @@ namespace ColorScanner.Droid.Services
         private static IBluetoothService _Instance;
         public static IBluetoothService Instance => _Instance ??= new BluetoothService();
 
-		private string _currentData;
-
         public BluetoothService()
         {
         }
@@ -28,20 +26,16 @@ namespace ColorScanner.Droid.Services
 
 		#region IBluetoothService implementation
 
-		public void Start(string name, int sleepTime = 200)
+		public void Start(string name, int sleepTime, Func<string, Task> resultTask)
 		{
-			Task.Run(() => Loop(name, sleepTime));
+			Task.Run(() => Loop(name, sleepTime, resultTask));
 		}
+
 		public void Cancel()
 		{
 			System.Diagnostics.Debug.WriteLine("Send a cancel to task!");
 			_ct?.Cancel();
 		}
-
-		public Task<string> GetCurrentData()
-        {
-			return Task.FromResult(_currentData);
-        }
 
 		public Task<IEnumerable<string>> GetPairedDevices()
         {
@@ -63,7 +57,7 @@ namespace ColorScanner.Droid.Services
 
 		#region -- Private Helpers --
 
-		private async Task Loop(string name, int sleepTime)
+		private async Task Loop(string name, int sleepTime, Func<string, Task> resultTask)
 		{
 			BluetoothDevice device = null;
 			BluetoothSocket BthSocket = null;
@@ -94,10 +88,15 @@ namespace ColorScanner.Droid.Services
 					else
 					{
 						UUID uuid = UUID.FromString("00001101-0000-1000-8000-00805f9b34fb");
-						if ((int)Android.OS.Build.VERSION.SdkInt >= 10) // Gingerbread 2.3.3 2.3.4
+
+						if ((int)Android.OS.Build.VERSION.SdkInt >= 10)
+						{
 							BthSocket = device.CreateInsecureRfcommSocketToServiceRecord(uuid);
+						}
 						else
+						{
 							BthSocket = device.CreateRfcommSocketToServiceRecord(uuid);
+						}
 
 						if (BthSocket != null)
 						{
@@ -108,17 +107,19 @@ namespace ColorScanner.Droid.Services
 								System.Diagnostics.Debug.WriteLine("Connected!");
 								var mReader = new InputStreamReader(BthSocket.InputStream);
 								var buffer = new BufferedReader(mReader);
+								var currentData = string.Empty;
 
 								while (_ct.IsCancellationRequested == false)
 								{
 									if (buffer.Ready())
 									{
 										char[] chr = new char[100];
-										_currentData = await buffer.ReadLineAsync();
+										currentData = await buffer.ReadLineAsync();
 
-										if (_currentData.Length > 0)
+										if (currentData.Length > 0)
 										{
-											System.Diagnostics.Debug.WriteLine("Letto: " + _currentData);
+											System.Diagnostics.Debug.WriteLine("Letto: " + currentData);
+											await resultTask(currentData);
 										}
 										else
 										{

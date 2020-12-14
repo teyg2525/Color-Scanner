@@ -17,9 +17,14 @@ namespace ColorScanner.ViewModels
         private IBluetoothService _BluetoothService;
 
         private CancellationTokenSource _refreshingCancellationToken;
-        private string _RRegex = "R:[0-9]{3}";
-        private string _GRegex = "G:[0-9]{3}";
-        private string _BRegex = "B:[0-9]{3}";
+        private string _RRegex = "R:[0-9]{0,3}";
+        private string _GRegex = "G:[0-9]{0,3}";
+        private string _BRegex = "B:[0-9]{0,3}";
+        private string _FrRegex = "Fr:[0-9]{0,5}";
+        private string _FgRegex = "Fg:[0-9]{0,5}";
+        private string _FbRegex = "Fb:[0-9]{0,5}";
+
+        //R:231G:228B:234Fr:41666Fg:37037Fb:47619
 
         public ColorsPageViewModel(IBluetoothService bluetoothService)
         {
@@ -63,6 +68,27 @@ namespace ColorScanner.ViewModels
             set => SetProperty(ref _BValue, value);
         }
 
+        private int _FRValue;
+        public int FRValue
+        {
+            get => _FRValue;
+            set => SetProperty(ref _FRValue, value);
+        }
+
+        private int _FGValue;
+        public int FGValue
+        {
+            get => _FGValue;
+            set => SetProperty(ref _FGValue, value);
+        }
+
+        private int _FBValue;
+        public int FBValue
+        {
+            get => _FBValue;
+            set => SetProperty(ref _FBValue, value);
+        }
+
         private string _ConnectedDevice;
         public string ConnectedDevice
         {
@@ -100,11 +126,7 @@ namespace ColorScanner.ViewModels
             if (parameters.TryGetValue(Constants.SelectedDeviceKey, out string device))
             {
                 ConnectedDevice = device;
-                _BluetoothService.Start(ConnectedDevice, 200);
-
-                _refreshingCancellationToken = new CancellationTokenSource();
-
-                Task.Run(() => InitRefreshingLoopAsync(_refreshingCancellationToken.Token));
+                _BluetoothService.Start(ConnectedDevice, DEFAULT_REFRESHING_FREQUENCY, SetDisplayingData);
 
                 IsConnected = true;
             }
@@ -121,23 +143,6 @@ namespace ColorScanner.ViewModels
 
         #region -- Private Helpers --
 
-        private async Task InitRefreshingLoopAsync(CancellationToken cancellationToken, int frequency = DEFAULT_REFRESHING_FREQUENCY)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                var data = await _BluetoothService.GetCurrentData();
-
-                if (!string.IsNullOrEmpty(data))
-                {
-                    await SetDisplayingData(data);
-                }
-                else
-                {
-                    await SetDefaultValues();
-                }
-            }
-        }
-
         private Task SetDisplayingData(string data)
         {
             try
@@ -145,6 +150,9 @@ namespace ColorScanner.ViewModels
                 var rRegex = new Regex(_RRegex);
                 var gRegex = new Regex(_GRegex);
                 var bRegex = new Regex(_BRegex);
+                var frRegex = new Regex(_FrRegex);
+                var fgRegex = new Regex(_FgRegex);
+                var fbRegex = new Regex(_FbRegex);
 
                 var rStr = rRegex.Match(data).Value;
                 var gStr = gRegex.Match(data).Value;
@@ -157,31 +165,28 @@ namespace ColorScanner.ViewModels
                 var color = System.Drawing.Color.FromArgb(r, g, b);
                 var hex = $"{color.R.ToString("X2")}{color.G.ToString("X2")}{color.B.ToString("X2")}";
 
+                var frStr = frRegex.Match(data).Value;
+                var fgStr = fgRegex.Match(data).Value;
+                var fbStr = fbRegex.Match(data).Value;
+
+                var fr = int.Parse(frStr.Replace("Fr:", string.Empty));
+                var fg = int.Parse(fgStr.Replace("Fg:", string.Empty));
+                var fb = int.Parse(fbStr.Replace("Fb:", string.Empty));
+
                 CurrentColor = Color.FromHex(hex);
                 HexValue = hex;
                 RValue = r;
                 GValue = g;
                 BValue = b;
+                FRValue = fr;
+                FGValue = fg;
+                FBValue = fb;
                 NoData = false;
             }
             catch
             {
                 Debug.WriteLine("Something wrong.");
             }
-
-            return Task.CompletedTask;
-        }
-
-        private Task SetDefaultValues()
-        {
-            NoData = true;
-
-            CurrentColor = Color.White;
-
-            HexValue = null;
-            RValue = 0;
-            GValue = 0;
-            BValue = 0;
 
             return Task.CompletedTask;
         }
