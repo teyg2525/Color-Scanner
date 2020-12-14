@@ -13,7 +13,7 @@ namespace ColorScanner.ViewModels
 {
     public class ColorsPageViewModel : BaseViewModel
     {
-        private const int DEFAULT_REFRESHING_FREQUENCY = 200;
+        private const int DEFAULT_REFRESHING_FREQUENCY = 400;
         private IBluetoothService _BluetoothService;
 
         private CancellationTokenSource _refreshingCancellationToken;
@@ -42,22 +42,22 @@ namespace ColorScanner.ViewModels
             set => SetProperty(ref _HEXValue, value);
         }
 
-        private double _RValue;
-        public double RValue
+        private int _RValue;
+        public int RValue
         {
             get => _RValue;
             set => SetProperty(ref _RValue, value);
         }
 
-        private double _GValue;
-        public double GValue
+        private int _GValue;
+        public int GValue
         {
             get => _GValue;
             set => SetProperty(ref _GValue, value);
         }
 
-        private double _BValue;
-        public double BValue
+        private int _BValue;
+        public int BValue
         {
             get => _BValue;
             set => SetProperty(ref _BValue, value);
@@ -146,12 +146,19 @@ namespace ColorScanner.ViewModels
                 var gRegex = new Regex(_GRegex);
                 var bRegex = new Regex(_BRegex);
 
-                var r = double.Parse(rRegex.Match(data).Value.Replace("R:", string.Empty));
-                var g = double.Parse(rRegex.Match(data).Value.Replace("G:", string.Empty));
-                var b = double.Parse(rRegex.Match(data).Value.Replace("B:", string.Empty));
+                var rStr = rRegex.Match(data).Value;
+                var gStr = gRegex.Match(data).Value;
+                var bStr = bRegex.Match(data).Value;
 
-                CurrentColor = Color.FromRgb(r, g, b);
-                HexValue = _CurrentColor.ToHex();
+                var r = int.Parse(rStr.Replace("R:", string.Empty));
+                var g = int.Parse(gStr.Replace("G:", string.Empty));
+                var b = int.Parse(bStr.Replace("B:", string.Empty));
+
+                var color = System.Drawing.Color.FromArgb(r, g, b);
+                var hex = $"{color.R.ToString("X2")}{color.G.ToString("X2")}{color.B.ToString("X2")}";
+
+                CurrentColor = Color.FromHex(hex);
+                HexValue = hex;
                 RValue = r;
                 GValue = g;
                 BValue = b;

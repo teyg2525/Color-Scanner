@@ -76,7 +76,7 @@
                              VerticalOptions="StartAndExpand"
                              HorizontalOptions="FillAndExpand">
 
-                    <Label Text="{Binding HEXValue, StringFormat=HEX: {0}}"
+                    <Label Text="{Binding HexValue, StringFormat=HEX: {0}}"
                            FontFamily="Roboto-Medium"
                            FontSize="{StaticResource tsize_i2}"
                            TextColor="{StaticResource bg_i2}"
@@ -86,35 +86,32 @@
                            HorizontalTextAlignment="Center"
                            Margin="0,0,0,20"/>
 
-                    <Label Text="{Binding Ralue, StringFormat=R: {0}}"
+                    <Label Text="{Binding RValue, StringFormat='R: {0}'}"
                            FontFamily="Roboto-Medium"
                            FontSize="{StaticResource tsize_i2}"
                            TextColor="{StaticResource bg_i2}"
                            VerticalOptions="Center"
                            HorizontalOptions="FillAndExpand"
                            VerticalTextAlignment="Center"
-                           HorizontalTextAlignment="Center"
-                           Margin="0,0,0,20"/>
+                           HorizontalTextAlignment="Center"/>
 
-                    <Label Text="{Binding GValue, StringFormat=G: {0}}"
+                    <Label Text="{Binding GValue, StringFormat='G: {0}'}"
                            FontFamily="Roboto-Medium"
                            FontSize="{StaticResource tsize_i2}"
                            TextColor="{StaticResource bg_i2}"
                            VerticalOptions="Center"
                            HorizontalOptions="FillAndExpand"
                            VerticalTextAlignment="Center"
-                           HorizontalTextAlignment="Center"
-                           Margin="0,0,0,20"/>
+                           HorizontalTextAlignment="Center"/>
 
-                    <Label Text="{Binding BValue, StringFormat=B: {0}}"
+                    <Label Text="{Binding BValue, StringFormat='B: {0}'}"
                            FontFamily="Roboto-Medium"
                            FontSize="{StaticResource tsize_i2}"
                            TextColor="{StaticResource bg_i2}"
                            VerticalOptions="Center"
                            HorizontalOptions="FillAndExpand"
                            VerticalTextAlignment="Center"
-                           HorizontalTextAlignment="Center"
-                           Margin="0,0,0,20"/>
+                           HorizontalTextAlignment="Center"/>
 
 
                     <View.Triggers>
