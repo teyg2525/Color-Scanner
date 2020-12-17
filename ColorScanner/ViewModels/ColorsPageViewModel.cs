@@ -147,6 +147,7 @@ namespace ColorScanner.ViewModels
                 var rRegex = new Regex(_RRegex);
                 var gRegex = new Regex(_GRegex);
                 var bRegex = new Regex(_BRegex);
+
                 var frRegex = new Regex(_FrRegex);
                 var fgRegex = new Regex(_FgRegex);
                 var fbRegex = new Regex(_FbRegex);
@@ -159,7 +160,7 @@ namespace ColorScanner.ViewModels
                 var g = int.Parse(gStr.Replace("G:", string.Empty));
                 var b = int.Parse(bStr.Replace("B:", string.Empty));
 
-                var color = System.Drawing.Color.FromArgb(r, g, b);
+                var color = System.Drawing.Color.FromArgb(0, r, g, b);
                 var hex = $"{color.R:X2}{color.G:X2}{color.B:X2}";
 
                 var frStr = frRegex.Match(data).Value;
@@ -170,14 +171,17 @@ namespace ColorScanner.ViewModels
                 var fg = int.Parse(fgStr.Replace("Fg:", string.Empty));
                 var fb = int.Parse(fbStr.Replace("Fb:", string.Empty));
 
-                CurrentColor = Xamarin.Forms.Color.FromHex(hex);
+                CurrentColor = Color.FromHex(hex);
                 HexValue = hex;
+
                 RValue = r;
                 GValue = g;
                 BValue = b;
+
                 FRValue = fr;
                 FGValue = fg;
                 FBValue = fb;
+
                 NoData = false;
             }
             catch

@@ -9,6 +9,7 @@ using Prism;
 using Prism.Ioc;
 using ColorScanner.Services;
 using ColorScanner.Droid.Services;
+using Android.Support.V7.App;
 
 namespace ColorScanner.Droid
 {
@@ -19,6 +20,7 @@ namespace ColorScanner.Droid
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
+            AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
 
             base.OnCreate(savedInstanceState);
 
